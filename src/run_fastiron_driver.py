@@ -62,7 +62,8 @@ request = """{
 SHELL_NAME = "Brocade FastIron Switch 2G" + "."
 # SHELL_NAME = ""
 
-address = '172.29.168.53'
+# address = '172.29.168.53'
+address = '10.254.12.19'
 user = 'root'
 password = 'Password1'
 # port = 1222
@@ -74,7 +75,7 @@ context = ResourceCommandContext()
 context.resource = ResourceContextDetails()
 context.resource.name = 'Test FastIron'
 context.resource.fullname = 'Test Brocade FastIron'
-context.resource.family = 'CS_Router'
+context.resource.family = 'CS_Switch'
 context.reservation = ReservationContextDetails()
 context.reservation.reservation_id = 'test_id'
 context.resource.attributes = {}
@@ -84,7 +85,7 @@ context.resource.attributes['{}host'.format(SHELL_NAME)] = address
 context.resource.attributes['{}Enable Password'.format(SHELL_NAME)] = enable_password
 # context.resource.attributes['Port'] = port
 # context.resource.attributes['Backup Location'] = 'tftp://172.25.10.96/AireOS_test'
-context.resource.attributes['Backup Location'.format(SHELL_NAME)] = 'ftp://junos:junos@192.168.85.47'
+context.resource.attributes['{}Backup Location'.format(SHELL_NAME)] = 'ftp://junos:junos@192.168.85.47'
 context.resource.address = address
 # context.connectivity = ConnectivityContext()
 # context.connectivity.admin_auth_token = auth_key
@@ -92,7 +93,7 @@ context.resource.address = address
 # context.connectivity.cloudshell_api_port = api_port
 context.resource.attributes['{}SNMP Version'.format(SHELL_NAME)] = '2'
 context.resource.attributes['{}SNMP Read Community'.format(SHELL_NAME)] = 'public'
-context.resource.attributes['{}CLI Connection Type'.format(SHELL_NAME)] = 'ssh'
+context.resource.attributes['{}CLI Connection Type'.format(SHELL_NAME)] = 'telnet'
 context.resource.attributes['{}Enable SNMP'.format(SHELL_NAME)] = 'False'
 context.resource.attributes['{}Disable SNMP'.format(SHELL_NAME)] = 'False'
 # context.resource.attributes['CLI Connection Type'] = 'telnet'
@@ -115,9 +116,9 @@ if __name__ == '__main__':
         api = type('api', (object,),
                    {'DecryptPassword': lambda self, pw: type('Password', (object,), {'Value': pw})()})()
         get_api.return_value = api
-        response = driver.get_inventory(context)
+        # response = driver.get_inventory(context)
         # response = driver.health_check(context=context)
-        # response = driver.run_custom_command(context=context, custom_command="show ver")
+        response = driver.run_custom_command(context=context, custom_command="show ver")
         # response = driver.send_custom_command(context=context, custom_command="show ver")
 
         print response

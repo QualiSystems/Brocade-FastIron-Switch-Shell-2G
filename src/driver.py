@@ -8,8 +8,7 @@ from cloudshell.networking.brocade.fastiron.runners.fastiron_connectivity_runner
     BrocadeFastIronConnectivityRunner as ConnectivityRunner
 from cloudshell.networking.brocade.fastiron.runners.fastiron_configuration_runner import \
     BrocadeFastIronConfigurationRunner as ConfigurationRunner
-#TODO: Fix autoload
-from cloudshell.networking.brocade.runners.brocade_autoload_runner import BrocadeAutoloadRunner as AutoloadRunner
+from cloudshell.networking.brocade.fastiron.runners.fastiron_autoload_runner import BrocadeFastIronAutoloadRunner as AutoloadRunner
 from cloudshell.networking.brocade.fastiron.runners.fastiron_firmware_runner import BrocadeFastIronFirmwareRunner as FirmwareRunner
 from cloudshell.networking.brocade.runners.brocade_run_command_runner import BrocadeRunCommandRunner as CommandRunner
 from cloudshell.networking.brocade.runners.brocade_state_runner import BrocadeStateRunner as StateRunner
