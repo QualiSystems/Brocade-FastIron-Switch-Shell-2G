@@ -9,7 +9,7 @@ from cloudshell.networking.brocade.fastiron.runners.fastiron_connectivity_runner
 from cloudshell.networking.brocade.fastiron.runners.fastiron_configuration_runner import \
     BrocadeFastIronConfigurationRunner as ConfigurationRunner
 from cloudshell.networking.brocade.fastiron.runners.fastiron_autoload_runner import BrocadeFastIronAutoloadRunner as AutoloadRunner
-from cloudshell.networking.brocade.fastiron.runners.fastiron_firmware_runner import BrocadeFastIronFirmwareRunner as FirmwareRunner
+from cloudshell.networking.brocade.runners.brocade_firmware_runner import BrocadeFirmwareRunner as FirmwareRunner
 from cloudshell.networking.brocade.runners.brocade_run_command_runner import BrocadeRunCommandRunner as CommandRunner
 from cloudshell.networking.brocade.runners.brocade_state_runner import BrocadeStateRunner as StateRunner
 from cloudshell.networking.networking_resource_driver_interface import NetworkingResourceDriverInterface
@@ -147,9 +147,6 @@ class BrocadeFastIronShellDriver(ResourceDriverInterface, NetworkingResourceDriv
 
         if not configuration_type:
             configuration_type = 'running'
-
-        if not vrf_management_name:
-            vrf_management_name = resource_config.vrf_management_name
 
         configuration_operations = ConfigurationRunner(cli=self._cli,
                                                        logger=logger,

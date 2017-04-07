@@ -5,12 +5,10 @@ import re
 
 from cloudshell.cli.command_template.command_template_executor import CommandTemplateExecutor
 from cloudshell.networking.brocade.command_templates import save_restore
-from cloudshell.networking.brocade.fastiron.utils import buffer_readup
 
 
 class FastIronSaveRestoreActions(object):
-    BUFFER_READUP_TIMEOUT = 3
-    BUFFER_READUP_RETRIES = 10
+    SAVE_RESTORE_PROMPT = r"[Dd]one|[Ee]rror|[Ff]ailed"
 
     def __init__(self, cli_service, logger):
         """ Save and Restore device configuration actions
@@ -38,20 +36,17 @@ class FastIronSaveRestoreActions(object):
         """
 
         output = CommandTemplateExecutor(self._cli_service, save_restore.SAVE,
+                                         expected_string=self.SAVE_RESTORE_PROMPT,
                                          action_map=action_map,
                                          error_map=error_map).execute_command(config=config,
-                                                                              scheme=protocol,
+                                                                              protocol=protocol,
                                                                               host=host,
                                                                               file_path=file_path)
 
-        output = buffer_readup(output=output,
-                               cli_service=self._cli_service,
-                               logger=self._logger,
-                               max_retries=self.BUFFER_READUP_RETRIES,
-                               retry_timeout=self.BUFFER_READUP_TIMEOUT)
+        self._cli_service.send_command("")
 
         if not re.search(r"[Dd]one", output, re.DOTALL):
-            matched = re.match(r"(Error.*)\n", output, re.DOTALL)
+            matched = re.search(r"(Error.*)\n", output, re.DOTALL)
             if matched:
                 error = matched.group()
             else:
@@ -73,31 +68,29 @@ class FastIronSaveRestoreActions(object):
 
         if overwrite:
             output = CommandTemplateExecutor(self._cli_service, save_restore.RESTORE,
+                                             expected_string=self.SAVE_RESTORE_PROMPT,
                                              action_map=action_map,
                                              error_map=error_map).execute_command(config=config,
-                                                                                  scheme=protocol,
+                                                                                  protocol=protocol,
                                                                                   host=host,
                                                                                   file_path=file_path,
                                                                                   overwrite="")
         else:
             output = CommandTemplateExecutor(self._cli_service, save_restore.RESTORE,
+                                             expected_string=self.SAVE_RESTORE_PROMPT,
                                              action_map=action_map,
                                              error_map=error_map).execute_command(config=config,
-                                                                                  scheme=protocol,
+                                                                                  protocol=protocol,
                                                                                   host=host,
                                                                                   file_path=file_path)
 
-        output = buffer_readup(output=output,
-                               cli_service=self._cli_service,
-                               logger=self._logger,
-                               max_retries=self.BUFFER_READUP_RETRIES,
-                               retry_timeout=self.BUFFER_READUP_TIMEOUT)
+        self._cli_service.send_command("")
 
         if re.search(r"Invalid input", output, re.DOTALL):
             raise Exception(self.__class__.__name__, "Restore configuration failed. See logs for details")
 
         if not re.search(r"[Dd]one", output, re.DOTALL):
-            matched = re.match(r"[Ee]rror.*", output, re.DOTALL)
+            matched = re.search(r"[Ee]rror.*", output, re.DOTALL)
             if matched:
                 error = matched.group()
             else:
